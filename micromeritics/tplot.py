@@ -1,17 +1,17 @@
-"""This module provides the t-Plot calculations on isotherm data.  
-See: http://micro.edu/calculations/t-Plot.html for details. 
+"""This module provides the t-Plot calculations on isotherm data.
+See: http://micro.edu/calculations/t-Plot.html for details.
 """
 
 import numpy as np
 import math
-import constants as const
-import util
+
+from . import constants as const, util
 
 def tplot(Prel, Qads, thick_fcn, tmin, tmax,
           dcf, sacf, sa):
     """Run the t-Plot Calculation
 
-    Arguments: 
+    Arguments:
     Qads: Quantity of gas adsorbed (cm^3/g STP) (numpy array)
     Prel: Relative Pressure (numpy array)
     thick_fcn: The thickness function to use (thichness in A).
@@ -46,8 +46,8 @@ def tplot(Prel, Qads, thick_fcn, tmin, tmax,
     ext_sa = (lf.slope * dcf) / sacf * 10000
     ma = sa - ext_sa
     mv = lf.y_intercept * dcf
-    
-    return util.make_touple(
+
+    return util.make_tuple(
         "tPlotResults",
         t_fit = t_fit,
         Qads_fit = Qads_fit,

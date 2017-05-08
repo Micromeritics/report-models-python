@@ -1,41 +1,46 @@
-import numpy as np
 import math
 
-def make_touple( name, **args ) :
-    """Make a named touple with the keyword aruments passed in.  
+import numpy as np
 
-    For example: 
-       p = make_touple(x=1.0, y=2.0)
+def make_tuple(name, **args):
+    """ Make a named tuple with the keyword arguments passed in.
+
+    For example:
+       p = make_tuple(x=1.0, y=2.0)
        distance = math.sqrt(p.x**2 + p.y**2)
     """
+
     from collections import namedtuple
+
     return namedtuple(name, args.keys() )(**args)
 
-def restrict_isotherm( P, Q, Pmin, Pmax ):
-    """Restrict the isotherm Q, P to pressures between min and max. 
+def restrict_isotherm(P, Q, Pmin, Pmax):
+    """ Restrict the isotherm Q, P to pressures between min and max.
 
-    Q: Quanity adsorbed 
-    P: Pressure (relative or absolute)
-    Pmin: minimum pressure
-    Pmax: maximum pressure
+    Args:
+        P: Pressure (ndarray)
+        Q: Quantity adsorbed (ndarray)
+        Pmin: Minimum pressure (float)
+        Pmax: Maximum pressure (float)
 
-    Returns:  Qads, P restricted to the specified range
+    Returns:
+        P, Q restricted to the specified range
     """
 
-    b = np.logical_and( P >= Pmin, P <= Pmax)
+    b = np.logical_and(P >= Pmin, P <= Pmax)
+
     return P[b], Q[b]
 
+def linefit(x, y):
+    """ Does a least squares best line fit calculation to the x,y data
+    passed in.
 
-def linefit(x,y):
-    """Does a least squares best line fit calculation to the x,y data
-    passed in.  
-
-    Returns a namedtouple with the following fields:  
-    slope:                   Slope of best fit line. 
-    y_intercept:             Y-Intercept of best fit line. 
-    slope_err:               Uncertainty in the slope. 
-    y_intercept_err:         Uncertainty in the intercept. 
-    correlation_coefficient: Correlation coefficient (r) for the data. 
+    Returns a namedtuple with the following fields:
+    slope:                   Slope of best fit line.
+    y_intercept:             Y-Intercept of best fit line.
+    slope_err:               Uncertainty in the slope.
+    y_intercept_err:         Uncertainty in the intercept.
+    correlation_coefficient: Correlation coefficient (r) for the data.
     """
 
     n = len(x)
@@ -47,7 +52,7 @@ def linefit(x,y):
 
     slope = p[0]
     y_intercept = p[1]
-    if n>2 :
+    if n > 2:
         slope_err = math.sqrt(1./(n-2)*res/D)
         y_intercept_err = math.sqrt(1./(n-2)*(D/n + x_bar**2)*res/D)
     else:
@@ -55,11 +60,10 @@ def linefit(x,y):
         y_intercept_err = 0
     correlation_coefficient = np.corrcoef(x, y)[0][1]
 
-    return make_touple("LineFitData", 
+    return make_tuple("LineFitData",
         slope = slope,
         y_intercept = y_intercept,
         slope_err = slope_err,
         y_intercept_err = y_intercept_err,
-        correlation_coefficient = correlation_coefficient, 
+        correlation_coefficient = correlation_coefficient,
     )
-
